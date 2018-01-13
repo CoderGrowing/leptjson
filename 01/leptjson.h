@@ -42,18 +42,3 @@ lept_type lept_get_type(const lept_value* v);        // 访问结果，获取JSON类型
 
 #endif // LEPTJSON_H__
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
