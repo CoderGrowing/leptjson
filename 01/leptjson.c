@@ -12,7 +12,7 @@ typedef struct {
 
 
 /* ws = *(%x20 / %x09 / %x0A / %x0D) */
-// ½âÎö¿Õ°×·û 
+// è§£æç©ºç™½ç¬¦ 
 static void lept_parse_whitespace(lept_context* c) {
     const char *p = c->json;
     while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r')
@@ -25,8 +25,8 @@ static int lept_parse_null(lept_context* c, lept_value* v) {
     EXPECT(c, 'n');
     if (c->json[0] != 'u' || c->json[1] != 'l' || c->json[2] != 'l')
         return LEPT_PARSE_INVALID_VALUE;
-    c->json += 3;     // null½âÎöÍê±Ï 
-    v->type = LEPT_NULL;     // ÀàĞÍÎªNULL 
+    c->json += 3;     // nullè§£æå®Œæ¯• 
+    v->type = LEPT_NULL;     // ç±»å‹ä¸ºNULL 
     return LEPT_PARSE_OK;
 }
 
@@ -61,19 +61,36 @@ static int lept_parse_value(lept_context* c, lept_value* v) {
     }
 }
 
+// ä½œè€…å†™çš„lept_parserç­”æ¡ˆ
+// int lept_parse(lept_value* v, const char* json) {
+//     lept_context c;
+//     int ret;
+    
+//     assert(v != NULL);
+//     c.json = json;
+//     v->type = LEPT_NULL;
+//     lept_parse_whitespace(&c);
+//     if ((ret = lept_parse_value(&c, v)) == LEPT_PARSE_OK) {    // retè¡¨ç¤ºè§£æçŠ¶æ€ï¼Œå•å‡ºå£ï¼Œæ¯”è‡ªå·±å†™çš„è¦å¥½
+//         lept_parse_whitespace(&c);
+//         if (*c.json != '\0')
+//             ret = LEPT_PARSE_ROOT_NOT_SINGULAR;
+//     }
+//     return ret;
+// }
+
 int lept_parse(lept_value* v, const char* json) {
 	lept_context c;
 	int status;
 	
 	assert(v != NULL);
 	c.json = json;
-	v->type = LEPT_NULL;       // Èô lept_parse()Ê§°Ü£¬»á°ÑvÉèÎª null ÀàĞÍËùÒÔÕâÀïÏÈ°ÑËüÉèÎª null
+	v->type = LEPT_NULL;       // è‹¥ lept_parse()å¤±è´¥ï¼Œä¼šæŠŠvè®¾ä¸º null ç±»å‹æ‰€ä»¥è¿™é‡Œå…ˆæŠŠå®ƒè®¾ä¸º null
 	lept_parse_whitespace(&c);
-	status = lept_parse_value(&c, v);     // ¼ÇÂ¼½âÎö×Ö·ûµÄ½á¹û 
+	status = lept_parse_value(&c, v);     // è®°å½•è§£æå­—ç¬¦çš„ç»“æœ 
 	lept_parse_whitespace(&c);
 	
-	if (status == LEPT_PARSE_OK){        // Èô½âÎö³É¹¦ºóÈÔÓĞ×Ö·û£¬·µ»ØLEPT_PARSE_ROOT_NOT_SINGULAR 
-		if (*c.json != NULL) {
+	if (status == LEPT_PARSE_OK){        // è‹¥è§£ææˆåŠŸåä»æœ‰å­—ç¬¦ï¼Œè¿”å›LEPT_PARSE_ROOT_NOT_SINGULAR 
+		if (*c.json != '\0') {
 			return LEPT_PARSE_ROOT_NOT_SINGULAR;
 		} else {
 			return LEPT_PARSE_OK;
